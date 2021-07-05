@@ -1,0 +1,300 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>MAG generation &#8212; mgnify-biata-2020 1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="VIRify pipeline" href="virify.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="virify.html" title="VIRify pipeline"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">mgnify-biata-2020 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mag-generation">
+<h1>MAG generation<a class="headerlink" href="#mag-generation" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Generation of metagenome assembled genomes (MAGs) from assemblies</li>
+<li>Assessment of quality (MIGMAGs)</li>
+<li>Taxonomic assignment</li>
+</ul>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>For this tutorial you will need to make a working directory to store
+your data in.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p ~/BiATA/session4/data
+chmod -R <span class="m">777</span> ~/BiATA
+<span class="nb">export</span> <span class="nv">DATADIR</span><span class="o">=</span>~/BiATA/session4/data
+</pre></div>
+</div>
+<p>In this directory, downloaded the tarball from <a class="reference external" href="http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2020/">http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2020/</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cd  ~/BiATA/session4/data
+wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2020/session4.tgz
+tar xzvf session4.tgz
+</pre></div>
+</div>
+<p>Now makes sure that you have pulled the docker container</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker pull microbiomeinformatics/biata-binning
+</pre></div>
+</div>
+<p>Finally, start the docker container in the following way:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run --rm -it  -e <span class="nv">DISPLAY</span><span class="o">=</span><span class="nv">$DISPLAY</span>  -v <span class="nv">$DATADIR</span>:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -e <span class="nv">DISPLAY</span><span class="o">=</span>docker.for.mac.localhost:0 biata-binning
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-metagenome-assembled-genomes">
+<h2>Generating metagenome assembled genomes<a class="headerlink" href="#generating-metagenome-assembled-genomes" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a>&nbsp;Learning Objectives - in the following exercises you will
+learn how to bin an assembly, assess the quality of this assembly with
+checkM and then visualise in placement of these genomes within a
+reference tree.</p>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> As with the assembly process, there are many software tools available for
+binning metagenome assemblies. Examples include, but are not limited to:</p>
+<p>MaxBin: <a class="reference external" href="https://sourceforge.net/projects/maxbin/">https://sourceforge.net/projects/maxbin/</a></p>
+<p>CONCOCT: <a class="reference external" href="https://github.com/BinPro/CONCOCT">https://github.com/BinPro/CONCOCT</a></p>
+<p>COCACOLA: <a class="reference external" href="https://github.com/younglululu/COCACOLA">https://github.com/younglululu/COCACOLA</a></p>
+<p>MetaBAT: <a class="reference external" href="https://bitbucket.org/berkeleylab/metabat">https://bitbucket.org/berkeleylab/metabat</a></p>
+<p>There is no clear winner between these tools, so the best is to
+experiment and compare a few different ones to determine which works
+best for your dataset. For this exercise we will be using <strong>MetaBAT</strong>
+(specifically, MetaBAT2). The way in which MetaBAT bins contigs together
+is summarised in Figure 1.</p>
+<p><a class="reference internal" href="_images/binning.png"><img alt="image2" src="_images/binning.png" style="width: 6.26389in; height: 3.91389in;" /></a></p>
+<p>Figure 1. MetaBAT workflow (Kang, et al. <em>PeerJ</em> 2015).</p>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> Prior to running MetaBAT, we need to generate coverage
+statistics by mapping reads to the contigs. To do this, we can use bwa
+(<a class="reference external" href="http://bio-bwa.sourceforge.net/">http://bio-bwa.sourceforge.net/</a>) and then the samtools s/w
+(<a class="reference external" href="http://www.htslib.org/">http://www.htslib.org</a>) to reformat the
+output. Again, this can take some time, so we have run it in advance. To
+repeat the process, you would run the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># index the contigs file that was produced by metaSPAdes:</span>
+bwa index contigs.fasta
+
+<span class="c1"># map the original reads to the contigs:</span>
+bwa mem contigs.fasta ERR011322_1.fastq ERR011322_2.fastq &gt; input.fastq.sam
+
+<span class="c1"># reformat the file with samtools:</span>
+samtools view -Sbu input.fastq.sam &gt; junk
+samtools sort junk input.fastq.sam
+</pre></div>
+</div>
+<p>We should now have the files we need for the rest of the process – the
+assemblies themselves (<em>contigs.fasta</em>) and a file from which we can
+generate the coverage stats (<em>input.fastq.sam.bam).</em></p>
+<p><strong>Running MetaBAT</strong></p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> Create a working directory on your desktop:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar zxvf seesion4.tgz
+</pre></div>
+</div>
+<p>This should contain the following two file&nbsp;<em>contigs.fasta</em>
+and&nbsp;<em>input.fastq.sam.bam</em>.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a>&nbsp;Create a subdirectory where files will be output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /opt/data/assemblies/
+mkdir contigs.fasta.metabat-bins2000
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> Run the following command to produce a
+<em>contigs.fasta.depth.txt</em> file, summarising the output depth for use with
+MetaBAT:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /opt/data/assemblies/
+jgi_summarize_bam_contig_depths --outputDepth contigs.fasta.depth.txt input.fastq.sam.bam
+
+<span class="c1"># now run MetaBAT</span>
+
+<span class="nb">cd</span> /opt/data/assemblies/
+metabat2 —inFile  contigs.fasta   --outFile contigs.fasta.metabat-bins2000/bin -- abdFile contigs.fasta.depth.txt --minContig <span class="m">2000</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a>&nbsp;Once the binning process is complete, each bin will be
+grouped into a multi-fasta file with a name structure of
+<strong>bin.[0-9].fa</strong>.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a>&nbsp;Move to the output directory and look at the output of the binning process.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /opt/data/assemblies/*contigs.fasta.metabat-bins2000/bin
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/question.png"><img alt="image4" src="_images/question.png" style="width: 0.26667in; height: 0.26667in;" /></a> How many bins did the process produce?</p>
+<p><a class="reference internal" href="_images/question.png"><img alt="image4" src="_images/question.png" style="width: 0.26667in; height: 0.26667in;" /></a> How many sequences are in each bin?</p>
+<p>Obviously, not all bins will have the same level of accuracy since some
+might represent a very small fraction of a potential species present in
+your dataset. To further assess the quality of the bins we will use
+<strong>CheckM</strong> (<a class="reference external" href="https://github.com/Ecogenomics/CheckM/wiki">https://github.com/Ecogenomics/CheckM/wiki</a>).</p>
+<p><strong>Running CheckM</strong></p>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> <strong>CheckM</strong> has its own reference database of single-copy
+marker genes. Essentially, based on the proportion of these markers
+detected in the bin, the number of copies of each and how different they
+are, it will determine the level of <strong>completeness</strong>, <strong>contamination</strong>
+and <strong>strain heterogeneity</strong> of the predicted genome.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> Before we start, we need to configure checkM.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir checkm_data
+mv checkm_data_2015_01_16.tar.gz checkm_data
+tar zxvf checkm_data_2015_01_16.tar.gz
+checkm data setRoot /opt/data/checkm_data
+</pre></div>
+</div>
+<p>This program has some handy tools not only for quality control, but also
+for taxonomic classification, assessing coverage, building a
+phylogenetic tree, etc. The most relevant ones for this exercise are
+wrapped into the <strong>lineage_wf</strong> workflow.</p>
+<p>Move back to the top level directory</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /opt/data/assemblies/
+</pre></div>
+</div>
+<p>Now run CheckM with the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>checkm lineage_wf -x fa contigs.fasta.metabat-bins2000 checkm_output --tab_table -f MAGs_checkm.tab --reduced_tree -t <span class="m">4</span>
+</pre></div>
+</div>
+<p>Due to memory constraints (&lt; 40 GB), we have added the option
+<strong>–reduced_tree</strong> to build the phylogeny with a reduced number of
+reference genomes.</p>
+<p>Once the <strong>lineage_wf</strong> analysis is done, the reference tree can be
+found in <strong>checkm_output/storage/tree/concatenated.tre</strong>. Additionally,
+you will have the taxonomic assignment and quality assessment of each
+bin in the file <strong>MAGs_checkm.tab</strong> with the corresponding level of
+<strong>completeness</strong>, <strong>contamination</strong> and <strong>strain heterogeneity</strong> (Fig.
+2). A quick way to infer the&nbsp;overall quality of the bin is to calculate
+the level of <strong>completeness -</strong></p>
+<p><strong>5*contamination</strong>. You should be aiming for an overall score of at
+least <strong>70-80%</strong>.</p>
+<p>&nbsp;<a class="reference internal" href="_images/checkm.png"><img alt="image5" src="_images/checkm.png" style="width: 6.26389in; height: 1.37569in;" /></a></p>
+<p>Figure 2. Example output of CheckM</p>
+<p>Before we can visualize and plot the tree we will need to convert the
+reference ID names used by checkm to taxon names. We have already
+prepared a mapping file for renaming the tree (<strong>rename_list.tab</strong>). We
+can then do this easily with the <strong>newick utilities</strong>
+(<a class="reference external" href="http://cegg.unige.ch/newick_utils">http://cegg.unige.ch/newick_utils</a>).</p>
+<p>To do this, run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nw_rename checkm_output/storage/tree/concatenated.tre rename_list.tab &gt; renamed.tree
+</pre></div>
+</div>
+<p><strong>Visualising the phylogenetic tree</strong></p>
+<p>We will now plot and visualize the tree we have produced. A quick and
+user- friendly way to do this is to use the web-based <strong>interactive Tree
+of Life</strong> (<strong>iTOL</strong>): <a class="reference external" href="http://itol.embl.de/index.shtml">http://itol.embl.de/index.shtml</a></p>
+<p><strong>iTOL</strong> only takes in newick formatted trees, so we need to quickly
+reformat the tree with <strong>FigTree</strong>
+(<a class="reference external" href="http://tree.bio.ed.ac.uk/software/figtree/">http://tree.bio.ed.ac.uk/software/figtree/</a>).</p>
+<p>You will need to copy the FigTree folder from Penelope to your home dir.
+To do this, find the FigTree folder on Penelope (under Metagenomics- Day
+3 etc), right click, and choose copy, then open your home dir and right
+click to paste. You should then be able to run FigTree as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>figtree
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a>&nbsp;&nbsp;Open the <strong>renamed.tree</strong> file with <strong>FigTree</strong> and then
+select from the toolbar <strong>File -&gt; Export Trees</strong>. In the <strong>Tree file
+format</strong> select <strong>Newick</strong> and export the file as <strong>renamed.nwk</strong></p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> To use <strong>iTOL</strong> you will need a user account. For the
+purpose of this tutorial we have already created one for you with an
+example tree. The login is as follows:</p>
+<p><strong>User:</strong> <em>EBI_training</em></p>
+<p><strong>Password:</strong> <em>EBI_training</em></p>
+<p>After you login, just click on <strong>My Trees</strong> in the toolbar at the top
+and select</p>
+<p><strong>IBD_checkm_tree.nwk</strong> from the <strong>Imported trees</strong> workspace.</p>
+<p>Alternatively, if you want to create your own account and plot the tree
+yourself</p>
+<p>follow these steps:</p>
+<blockquote>
+<div><p><strong>1)</strong> After you have created and logged in to your account go to <strong>My Trees</strong></p>
+<p><strong>2)</strong> From there select <strong>Upload tree files</strong> and upload the tree
+you exported from <strong>FigTree</strong></p>
+<p><strong>3)</strong> Once uploaded, click the tree name to visualize the plot</p>
+<p><strong>4)</strong> To colour the clades and the outside circle according to the
+phylum of each strain, drag and drop the files <strong>iTOL_clades.txt</strong> and
+<strong>iTOL_ocircles.txt</strong> into the browser window</p>
+</div></blockquote>
+<p>Once that is done, all the reference genomes used by <strong>CheckM</strong> will be
+coloured according to their phylum name, while all the other ones left
+blank correspond to the <strong>target genomes</strong> we placed in the tree.
+Highlighting each tip of the phylogeny will let you see the whole
+taxon/sample name. Feel free to play around with the plot.</p>
+<p><a class="reference internal" href="_images/question.png"><img alt="image4" src="_images/question.png" style="width: 0.26667in; height: 0.26667in;" /></a> Does the CheckM taxonomic classification make sense? What about the unknowns? What is their most likely taxon?</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">MAG generation</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#generating-metagenome-assembled-genomes">Generating metagenome assembled genomes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="virify.html"
+                        title="previous chapter">VIRify pipeline</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/mag.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="virify.html" title="VIRify pipeline"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">mgnify-biata-2020 1 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, MGnify.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>
