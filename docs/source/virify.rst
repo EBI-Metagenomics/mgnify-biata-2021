@@ -2,16 +2,9 @@
 Viral detection and classification
 **********************************
 
-1. Identification of putative viral sequences
----------------------------------------------
+IMPORTANT: It is strongly recommended that you complete section 1.1 below (setting up the computing environment) prior to the practical session. Depending on your available network it can take some time (1-2 hrs) to download the necessary files.
 
-|image1|\  In order to retrieve putative viral sequences from a set of metagenomic contigs we are going to use two different tools designed for this purpose, each of which employs a different strategy for viral sequence detection: **VirFinder** and **VirSorter**. VirFinder uses a prediction model based on kmer profiles trained using a reference database of viral and prokaryotic sequences. In contrast, VirSorter mainly relies on the comparison of predicted proteins with a comprehensive database of viral proteins and profile HMMs. The **VIRify pipeline** uses both tools as they provide complementary results:
-
-•	**VirFinder** performs better than VirSorter for short contigs (<3kb) and includes a prediction model suitable for detecting both eukaryotic and prokaryotic viruses (phages).
-
-•	In addition to reporting the presence of phage contigs, **VirSorter** detects and reports the presence of prophage sequences (phages integrated in contigs containing their prokaryotic hosts).
-
-|image3|\  1.1. To run this tutorial first we need to set up our computing environment in order to execute the commands as listed here. First, download and the **virify_tutorial.tar.gz** file containing all the data you will need using any of the following options. Depending on your available network, this may take some time (1-2hrs): 
+|image3|\  1.1. To run this tutorial first we need to set up our computing environment in order to execute the commands as listed here. First, download and the **virify_tutorial.tar.gz** file containing all the data you will need using any of the following options:
 
 .. code-block:: bash
 
@@ -35,9 +28,20 @@ Now change into the **virify_tutorial** directory and setup the environment by r
     mkdir obs_results
     
 All commands detailed below will be run from within this current working directory.
-Note: if there any issues in running this tutorial, there is a separate directory **exp_results/** with pre-computed results.
+Note: if there are any issues in running this tutorial, there is a separate directory **exp_results/** with pre-computed results.
 
-|image3|\  1.2 Now we can start running the analysis. In the current working directory you will find the metagenomic assembly we will be working with (**ERR575691_host_filtered.fasta**). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:
+
+1. Identification of putative viral sequences
+---------------------------------------------
+
+|image1|\  In order to retrieve putative viral sequences from a set of metagenomic contigs we are going to use two different tools designed for this purpose, each of which employs a different strategy for viral sequence detection: **VirFinder** and **VirSorter**. VirFinder uses a prediction model based on kmer profiles trained using a reference database of viral and prokaryotic sequences. In contrast, VirSorter mainly relies on the comparison of predicted proteins with a comprehensive database of viral proteins and profile HMMs. The **VIRify pipeline** uses both tools as they provide complementary results:
+
+•	**VirFinder** performs better than VirSorter for short contigs (<3kb) and includes a prediction model suitable for detecting both eukaryotic and prokaryotic viruses (phages).
+
+•	In addition to reporting the presence of phage contigs, **VirSorter** detects and reports the presence of prophage sequences (phages integrated in contigs containing their prokaryotic hosts).
+
+
+|image3|\  1.2 In the current working directory you will find the metagenomic assembly we will be working with (**ERR575691_host_filtered.fasta**). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:
 
 .. code-block:: bash
 
