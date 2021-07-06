@@ -33,8 +33,11 @@ Now change into the **virify_tutorial** directory and setup the environment by r
     docker load --input docker/virify.tar
     docker run --rm -it -v $(pwd)/data:/opt/data virify
     mkdir obs_results
+    
+All commands detailed below will be run from within this current working directory.
+Note: if there any issues in running this tutorial, there is a separate directory **exp_results/** with pre-computed results.
 
-|image3|\  1.2 Now we can start running the analysis. In the current working directory you will find the **obs_results** directory you just created, as well as three other directories (**databases, scripts, exp_results**) and the metagenomic assembly we will be working with (**ERR575691_host_filtered.fasta**). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:
+|image3|\  1.2 Now we can start running the analysis. In the current working directory you will find the metagenomic assembly we will be working with (**ERR575691_host_filtered.fasta**). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:
 
 .. code-block:: bash
 
@@ -136,8 +139,6 @@ Let’s inspect the results. Do:
     cat obs_results/*tax_assign.tsv
 
 You should see a list of **9 contigs** detected as viral and their taxonomic annotation in separate columns (partitioned by taxonomic rank). However, some do not have an annotation (e.g. **NODE_4...** and **NODE_5...**).
-
-Note: if there any issues in running this tutorial, there is a separate directory **exp_results/** with pre-computed results.
 
 Open the gene map PDF files of the corresponding contigs to understand why some contigs were **not assigned** to a taxonomic lineage. You will see that for these cases, either there were not enough genes matching the HMMs, or there was disagreement in their assignment.
 
