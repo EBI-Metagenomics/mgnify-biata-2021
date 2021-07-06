@@ -11,13 +11,20 @@ Viral detection and classification
 
 •	In addition to reporting the presence of phage contigs, **VirSorter** detects and reports the presence of prophage sequences (phages integrated in contigs containing their prokaryotic hosts).
 
-|image3|\  1.1. To run this tutorial first we need to set up our computing environment in order to execute the commands as listed here. First, download and extract the **virify_tutorial.tar.gz** file containing all the data you will need: 
+|image3|\  1.1. To run this tutorial first we need to set up our computing environment in order to execute the commands as listed here. First, download and the **virify_tutorial.tar.gz** file containing all the data you will need using any of the following options. Depending on your available network, this may take some time (1-2hrs): 
 
 .. code-block:: bash
 
-    wget http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2020/virify_tutorial.tar.gz
-    tar -xzvf virify_tutorial.tar.gz
+    wget http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/virify_tutorial.tar.gz
+    or
+    rsync -av --partial --progress rsync://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/virify_tutorial.tar.gz .
 
+Once downloaded, extract the files from the tarball:
+
+.. code-block:: bash
+
+    tar -xzvf virify_tutorial.tar.gz
+    
 Now change into the **virify_tutorial** directory and setup the environment by running the following commands in your current terminal session:
 
 .. code-block:: bash
@@ -27,13 +34,13 @@ Now change into the **virify_tutorial** directory and setup the environment by r
     docker run --rm -it -v $(pwd)/data:/opt/data virify
     mkdir obs_results
 
-|image3|\  1.2 Now we can start running the analysis. In the current working directory you will find the metagenomic assembly we will be working with (**ERR575691_host_filtered.fasta**). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:
+|image3|\  1.2 Now we can start running the analysis. In the current working directory you will find the **obs_results** directory you just created, as well as three other directories (**databases, scripts, exp_results**) and the metagenomic assembly we will be working with (**ERR575691_host_filtered.fasta**). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:
 
 .. code-block:: bash
 
     filter_contigs_len.py -f ERR575691_host_filtered.fasta -l 0.5 -o obs_results/ERR575691_host_filtered_filt500bp.fasta
 
-|image3|\  1.3. The output from this command is a file named **ERR575691_host_filtered_filt500bp.fasta**. Our dataset is now ready to be processed for the detection of putative viral sequences. We will first analyse it with VirFinder using a custom R script:
+|image3|\  1.3. The output from this command is a file named **ERR575691_host_filtered_filt500bp.fasta** which is located in the **obs_results** diretory. Our dataset is now ready to be processed for the detection of putative viral sequences. We will first analyse it with VirFinder using a custom R script:
 
 .. code-block:: bash
 
