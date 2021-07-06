@@ -38,7 +38,7 @@ Finally, start the docker container in the following way:
 
 .. code-block:: bash
 
-   docker run --rm -it  -e DISPLAY=$DISPLAY  -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -e DISPLAY=docker.for.mac.localhost:0 biata-qc-assembly
+   docker run --rm -it  -e DISPLAY=$DISPLAY  -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -e DISPLAY=docker.for.mac.localhost:0 microbiomeinformatics/biata-qc-assembly
 
 Part 1 - Quality control and filtering of the raw sequence files
 -----------------------------------------------------------------
@@ -274,7 +274,7 @@ improved? 
 |image3|\  Did sequences at the 5’ end become uniform? Why might that
 be? Is there anything that suggests that adaptor sequences were found? 
 
-|image29\  To generate a summary file of how the sequence were
+|image29|\  To generate a summary file of how the sequence were
 categorised by Kneaddata, run the following command.  
 
 .. code-block:: bash
