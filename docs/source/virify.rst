@@ -59,13 +59,11 @@ Now change into the **virify_tutorial** directory and setup the environment by r
  - **Category 3**: "possible" predictions
  - **Categories 4-6**: predicted prophages
 
-|image3|\  1.5. While VirSorter is running, we have prepared an R script so you can inspect the VirFinder results in the meantime using ggplot2. Open RStudio and load the **Analyse_VirFinder.R** script located in the **/virify_tutorial/data/scripts/** directory. Run the script (press Source on the top right corner) to generate the plot.
+|image3|\  1.5. While VirSorter is running, we have prepared an R script so you can inspect the VirFinder results in the meantime using ggplot2. Open RStudio and load the **Analyse_VirFinder.R** script located in the **/virify_tutorial/data/scripts/** directory. Run the script (press Source on the top right corner) to generate the plot. (If you don't have RStudio, or don't care to run this you can just look at the resulting plot in the image below)
 
 |image2|\
 
-|image4|\  E1: What is the relationship between the **p-value** and the **score**? How do the results correlate with the **contig length**?
-
-|image4|\  E2: Try to understand what the script is doing. Can you edit it to show the **contig length as a function of the score**? Subset the graph to only show contigs with a **score of at least 0.75** (hint: use xlim).
+|image1|\  As you can see there is a relationship between the **p-value** and the **score**. A higher score or lower p-value indicates a higher likelihood of the sequence being a viral sequence. You will also notice that the results correlate with the **contig length**. The curves are slightly different depending on whether the contigs are > or < than 3kb. This is because VirFinder uses different machine learning models at these different levels of length.
 
 |image3|\  1.6. Once VirSorter finishes running, we then generate the corresponding viral sequence FASTA files using a custom python script (**parse_viral_pred.py**) as follows:
 
@@ -141,7 +139,7 @@ You should see a list of **9 contigs** detected as viral and their taxonomic ann
 
 Note: if there any issues in running this tutorial, there is a separate directory **exp_results/** with pre-computed results.
 
-|image4|\  E3: Which viruses were detected as **high confidence** or **low confidence**? Open the gene map PDF files of the corresponding contigs to understand the different assignment results. Why were some contigs **not assigned** to a taxonomic lineage?
+Open the gene map PDF files of the corresponding contigs to understand why some contigs were **not assigned** to a taxonomic lineage. You will see that for these cases, either there were not enough genes matching the HMMs, or there was disagreement in their assignment.
 
 |image5|\
 
