@@ -44,8 +44,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'mgnify-biata-2020'
-copyright = u'2020, MGnify'
+project = u'mgnify-biata-2021'
+copyright = u'2021, MGnify'
 author = u'MGnify'
 
 # The version info for the project you're documenting, acts as replacement for

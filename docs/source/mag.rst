@@ -18,12 +18,12 @@ your data in. 
     chmod -R 777 ~/BiATA
     export DATADIR=~/BiATA/session4/data 
 
-In this directory, downloaded the tarball from http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2020/
+In this directory, downloaded the tarball from http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/
 
 .. code-block:: bash
 
     cd  ~/BiATA/session4/data
-    wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2020/session4.tgz
+    wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/session4.tgz
     tar xzvf session4.tgz
 
 Now makes sure that you have pulled the docker container
