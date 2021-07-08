@@ -4,14 +4,14 @@ Assembling data
 
 - Sequence quality control (quality/adapter trimming, host decontamination)
 - Evaluating an assembly
-- Removing contaminatinants after assembly
+- Removing contaminants after assembly
 - Submitting primary assemblies to the ENA
 
 Prerequisites
 ---------------
 
 For this tutorial you will need to make a working directory to store
-your data in. 
+your data in: 
 
 .. code-block:: bash
 
@@ -25,7 +25,7 @@ In this directory, downloaded the tarball from http://ftp.ebi.ac.uk/pub/database
 
    cd  ~/BiATA/session1/data
    wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/session1.tgz
-   tar xzvf session1.tgz
+   tar -xzvf session1.tgz
 
 Now makes sure that you have pulled the docker container
 
@@ -43,8 +43,8 @@ Part 1 - Quality control and filtering of the raw sequence files
 -----------------------------------------------------------------
 
 |image1|\ Learning Objectives - in the following exercises you will learn
-how to check on the quality of short read sequences: identify the
-presence of adapter sequences, remove both adapters and low quality
+how to assess the quality of short read sequences, identify the
+presence of adapter sequences, and remove both adapters and low quality
 sequences. You will also learn how to construct a reference database for
 decontamination. 
 
@@ -153,8 +153,8 @@ and which ones have problems. 
 |image3|\ What fraction of reads are duplicates? 
 
 |image1|\  So, far we have looked at the raw files and assessed their
-content, but we have not done anything about removing duplicates,
-sequences with low quality scores or removal of the adapters. So, lets
+content, but we have not done anything about removing
+sequences with low quality scores or adapters. So, lets
 start this process. The first step in the process is to make a database
 relevant for decontaminating the sample. It is always good to routinely
 screen for human DNA (which may come from the host and/or staff
