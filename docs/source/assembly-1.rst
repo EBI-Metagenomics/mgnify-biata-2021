@@ -2,11 +2,10 @@
 Assembling data
 ***************
 
-- What constitutes a good assembly?
-- How to estimate assembly quality
-- Host decontamination
-- Raw read deposition vs assembly
-- Co-assembly
+- Sequence quality control (quality/adapter trimming, host decontamination)
+- Evaluating an assembly
+- Removing contaminatinants after assembly
+- Submitting primary assemblies to the ENA
 
 Prerequisites
 ---------------
@@ -45,9 +44,9 @@ Part 1 - Quality control and filtering of the raw sequence files
 
 |image1|\ Learning Objectives - in the following exercises you will learn
 how to check on the quality of short read sequences: identify the
-presence of adaptor sequences, remove both adaptors and low quality
+presence of adapter sequences, remove both adapters and low quality
 sequences. You will also learn how to construct a reference database for
-host decontamination. 
+decontamination. 
 
 |image2|\  First go to your working area, the data that you downloaded
 has been mounted in ``/opt/data`` in the docker container.
@@ -109,15 +108,15 @@ side of the report. Navigate to the “Per bases sequence content"
 
 |image5|\ 
 
-|image3|\ At around 15-19 nucleotides, there DNA composition becomes
-very even, however, a the 5’ end of the sequence there  are distinct
+|image3|\ At around 15-19 nucleotides, the DNA composition becomes
+very even but at the 5’ end of the sequence there  are distinct
 differences. Why do you think that is?
 
 |image2|\ Open up the FastQC report corresponding to the reversed
 reads. 
 
-|image3|\  Are there any significant differences between to the forward
-and reverse files?
+|image3|\  Are there any significant differences between the forward
+and reverse reads?
 
 For more information on the FastQC report, please consult the
 ‘Documentation’ available from this
@@ -155,12 +154,12 @@ and which ones have problems. 
 
 |image1|\  So, far we have looked at the raw files and assessed their
 content, but we have not done anything about removing duplicates,
-sequences with low quality scores or removal of the adaptors. So, lets
+sequences with low quality scores or removal of the adapters. So, lets
 start this process. The first step in the process is to make a database
 relevant for decontaminating the sample. It is always good to routinely
 screen for human DNA (which may come from the host and/or staff
 performing the experiment). However, if the sample is say from mouse,
-you would want to download the the mouse genome. 
+you would want to download the the mouse genome instead. 
 
 |image2|\  In the following exercise, we are going to use two “genomes”
 already downloaded for you in the decontamination folder. To make this
@@ -268,11 +267,11 @@ should see something like this:
 
 |image7|\
 
-|image3|\  Open the previous MultiQC report and see if they have
+|image3|\  Open the previous MultiQC report and see have they have
 improved? 
 
 |image3|\  Did sequences at the 5’ end become uniform? Why might that
-be? Is there anything that suggests that adaptor sequences were found? 
+be? Is there anything that suggests that adapter sequences were found? 
 
 |image29|\  To generate a summary file of how the sequence were
 categorised by Kneaddata, run the following command.  
@@ -384,6 +383,22 @@ alike metagenomes. Note, N10 is the minimum contig length to cover 10
 percent of the metagenome. N90 is the minimum contig length to cover 90
 percent of the metagenome.
 
+|image2|\ In addition to evaluating the contiguity the assemblies, we can
+ask what fraction of the diversity in the samples was assembled. We can
+answer this question by quantifying the number of reads that map to the
+assembly.
+
+.. code-block:: bash
+
+    bwa index scaffolds.fasta    
+    bwa mem -t 2 scaffolds.fasta /opt/data/clean/oral_human_example_1_splitaa_kneaddata_paired_1.fastq /opt/data/clean/oral_human_example_1_splitaa_kneaddata_paired_2.fastq | samtools view -bS - | samtools sort -@ 2 -o oral_human_example_1_splitaa.sam -
+    samtools index oral_human_example_1_splitaa.sam
+    samtools flagstat oral_human_example_1_splitaa.sam > oral_human_example_1_splitaa_flagstat.txt
+
+|image3|\ What percent of the reads were incorporated into the assembly?
+What factors can affect the percent of reads mapping to the assembly?
+
+
 |image2|\ Bandage (a Bioinformatics Application for Navigating De novo
 Assembly Graphs Easily), is a program that creates interactive
 visualisations of assembly graphs. They can be useful for finding
@@ -482,7 +497,7 @@ both, such that the mate pairs match up.
 .. code-block:: bash
 
     cd /opt/data
-    megahit -1    clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_1.fastq  -2 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_2.fastq -o coassembly/assembly2 -t 2 --k-list 23,51,77 
+    megahit -1 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_1.fastq  -2 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_2.fastq -o coassembly/assembly2 -t 2 --k-list 23,51,77 
 
 |image2|\  Now perform another co-assembly, depending on the computer
 you have, either change one of the previous fastq files for the 
