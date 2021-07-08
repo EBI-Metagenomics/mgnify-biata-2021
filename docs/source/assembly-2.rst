@@ -37,7 +37,7 @@ From the MGnify front page (https://www.ebi.ac.uk/metagenomics/) you can see var
 
 |question| How many samples does that relate to?
 
-|action| From the sample list, select the 3rd sample down (ERS1215575), and take a look at the metadata available.
+|action| From the sample page, filter the rows with accession ERS1215575, and take a look at the metadata available.
 
 |question| Do you know the exact location of where the sample was taken?
 
@@ -46,11 +46,11 @@ From the MGnify front page (https://www.ebi.ac.uk/metagenomics/) you can see var
 |question| Follow the link to the BioSamples record, can you find any more information about the location of the sample?
 
 |action| From the tabs in the header bar, select **Text search**, and then select **Samples** below the search box. There are a number of metadata fields available to allow you to filter for a sample of interest to you. Not all are relevant to all samples. 
-Within the hierarchy of biomes, navigate to environmental>aquatic>lentic. You should see 57 samples. Now select the depth filter.
+Within the hierarchy of biomes, navigate to environmental>aquatic>lentic. You should see 92 samples. Now select the depth filter.
 
 |question| How many lentic samples have depth data associated with them?
 
-|question| Using the sliders, can you identify a sample of a lentic water system from a depth between 25-50m?
+|question| Using the sliders, can you identify a sample of a lentic water system from a depth between 47-49m?
 
 MGnify assembly analysis
 **************************
@@ -59,7 +59,7 @@ Now we will look at some assembly data that has been analysed by MGnify.
 
 |action| Search for **MGYS00003598**, and go to this study page. This is a large study where MGnify have assembled the raw reads from an existing public study. The list of assemblies is shown at the bottom of the study page.
 
-|question| How many assemblies are included in this study?
+|question| How many analyses are included in this study?
 
 |action| Click on the 2nd analysis link in the list **MGYA00510849**. You could alternatively search for this accession using the text search options. Have a look at the information within the **Quality control** tab.
 
@@ -70,9 +70,11 @@ Now we will look at some assembly data that has been analysed by MGnify.
 
 |action| Click on the **Taxonomic analysis** tab and examine the phylum composition in the graphs and the krona plot.
 
-|question| What proportion of the total LSU rRNA predictions are eukaryotic? 
+|question| What proportion of the total LSU rRNA predictions are eukaryotic?
 
-|question| What proportion of the bacterial predictions are proteobacteria?
+|action| Try switching between the other available graph views.
+
+|question| Which phylum contains the highest proportion of LSU rRNA predictions?
 
 |action| Click on the **Functional analysis** tab. The top part of this page shows a sequence feature summary, showing the number of contigs with predicted coding sequences (pCDS), the number of pCDS with InterPro matches, etc.
 
@@ -84,7 +86,7 @@ Now we will look at some assembly data that has been analysed by MGnify.
 
 |question| How many different InterPro entries are matched by the pCDS? 
 
-|question| Why is this figure different to the number of pCDS that have InterProScan hits? 
+|question| Why is this number different to the number of pCDS that have InterProScan hits?
 
 |action| Click on the **GO Terms** sub-tab. This shows a summary of the most common GO terms annotated to the pCDS as both bar charts, and pie charts.
 
