@@ -29,6 +29,8 @@ RUN wget -q https://github.com/rrwick/Bandage/releases/download/v0.8.1/Bandage_U
     Bandage --version
 # Install simply python package for getting the assembly stats
 RUN pip3 install assembly-stats
+RUN pip3 install bwa
+RUN pip3 install samtools
 RUN apt-get install -y git
 RUN apt-get install -y zlib1g-dev
 ## Install Megahit
