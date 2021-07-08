@@ -2,6 +2,9 @@
 Viral detection and classification
 **********************************
 
+Prerequisites
+---------------
+
 IMPORTANT: It is strongly recommended that you complete section 1.1 below (setting up the computing environment) prior to the practical session. Depending on your available network it can take some time (1-2 hrs) to download the necessary files.
 
 |image3|\  1.1. To run this tutorial first we need to set up our computing environment in order to execute the commands as listed here. First, download and the **virify_tutorial.tar.gz** file containing all the data you will need using any of the following options:
