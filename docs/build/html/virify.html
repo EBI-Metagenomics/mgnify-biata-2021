@@ -1,110 +1,213 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>VIRify pipeline &#8212; mgnify-biata-2020 1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Viral detection and classification &#8212; Biata-2021 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="MAG generation" href="mag.html" />
-    <link rel="prev" title="Assembly analysis" href="assembly-2.html" /> 
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
   </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="mag.html" title="MAG generation"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="assembly-2.html" title="Assembly analysis"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">mgnify-biata-2020 1 documentation</a> &#187;</li> 
-      </ul>
-    </div>  
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="virify-pipeline">
-<h1>VIRify pipeline<a class="headerlink" href="#virify-pipeline" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li>The importance of viral metagenomic analysis</li>
-<li>Detection of viral sequences using VirSorter and VirFinder</li>
-<li>Taxonomic assignment</li>
-<li>Using VIRify to explore the human gut virome</li>
-</ul>
+  <section id="viral-detection-and-classification">
+<h1>Viral detection and classification<a class="headerlink" href="#viral-detection-and-classification" title="Permalink to this headline">¶</a></h1>
+<p>IMPORTANT: It is strongly recommended that you complete section 1.1 below (setting up the computing environment) prior to the practical session. Depending on your available network it can take some time (1-2 hrs) to download the necessary files.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 1.1. To run this tutorial first we need to set up our computing environment in order to execute the commands as listed here. First, download and the <strong>virify_tutorial.tar.gz</strong> file containing all the data you will need using any of the following options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/virify_tutorial.tar.gz
+or
+rsync -av --partial --progress rsync://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/virify_tutorial.tar.gz .
+</pre></div>
 </div>
+<p>Once downloaded, extract the files from the tarball:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar -xzvf virify_tutorial.tar.gz
+</pre></div>
+</div>
+<p>Now change into the <strong>virify_tutorial</strong> directory and setup the environment by running the following commands in your current terminal session:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> virify_tutorial
+docker load --input docker/virify.tar
+docker run --rm -it -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/data:/opt/data virify
+mkdir obs_results
+</pre></div>
+</div>
+<p>All commands detailed below will be run from within this current working directory.
+Note: if there are any issues in running this tutorial, there is a separate directory <strong>exp_results/</strong> with pre-computed results.</p>
+<section id="identification-of-putative-viral-sequences">
+<h2>1. Identification of putative viral sequences<a class="headerlink" href="#identification-of-putative-viral-sequences" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> In order to retrieve putative viral sequences from a set of metagenomic contigs we are going to use two different tools designed for this purpose, each of which employs a different strategy for viral sequence detection: <strong>VirFinder</strong> and <strong>VirSorter</strong>. VirFinder uses a prediction model based on kmer profiles trained using a reference database of viral and prokaryotic sequences. In contrast, VirSorter mainly relies on the comparison of predicted proteins with a comprehensive database of viral proteins and profile HMMs. The <strong>VIRify pipeline</strong> uses both tools as they provide complementary results:</p>
+<ul class="simple">
+<li><p><strong>VirFinder</strong> performs better than VirSorter for short contigs (&lt;3kb) and includes a prediction model suitable for detecting both eukaryotic and prokaryotic viruses (phages).</p></li>
+<li><p>In addition to reporting the presence of phage contigs, <strong>VirSorter</strong> detects and reports the presence of prophage sequences (phages integrated in contigs containing their prokaryotic hosts).</p></li>
+</ul>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 1.2 In the current working directory you will find the metagenomic assembly we will be working with (<strong>ERR575691_host_filtered.fasta</strong>). We will now filter the contigs listed in this file to keep only those that are ≥500 bp, by using the custom python script filter_contigs_len.py as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>filter_contigs_len.py -f ERR575691_host_filtered.fasta -l <span class="m">0</span>.5 -o obs_results/ERR575691_host_filtered_filt500bp.fasta
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 1.3. The output from this command is a file named <strong>ERR575691_host_filtered_filt500bp.fasta</strong> which is located in the <strong>obs_results</strong> diretory. Our dataset is now ready to be processed for the detection of putative viral sequences. We will first analyse it with VirFinder using a custom R script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>VirFinder_analysis_Euk.R -f obs_results/ERR575691_host_filtered_filt500bp.fasta -o obs_results
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 1.4. Following the execution of the R script you will see a tabular file (<strong>obs_results/ERR575691_host_filtered_filt500bp_VirFinder_table-all.tab</strong>) that collates the results obtained for each contig from the processed FASTA file. The next step will be to analyse the metagenomic assembly using VirSorter. To do this run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wrapper_phage_contigs_sorter_iPlant.pl -f obs_results/ERR575691_host_filtered_filt500bp.fasta --db <span class="m">2</span> --wdir obs_results/virsorter_output --virome --data-dir /opt/data/databases/virsorter-data
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> <strong>VirSorter classifies its predictions into different confidence categories:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Category 1</strong>: “most confident” predictions</p></li>
+<li><p><strong>Category 2</strong>: “likely” predictions</p></li>
+<li><p><strong>Category 3</strong>: “possible” predictions</p></li>
+<li><p><strong>Categories 4-6</strong>: predicted prophages</p></li>
+</ul>
+</div></blockquote>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 1.5. While VirSorter is running, we have prepared an R script so you can inspect the VirFinder results in the meantime using ggplot2. Open RStudio and load the <strong>Analyse_VirFinder.R</strong> script located in the <strong>/virify_tutorial/data/scripts/</strong> directory. Run the script (press Source on the top right corner) to generate the plot. (If you don’t have RStudio, or don’t care to run this you can just look at the resulting plot in the image below)</p>
+<p><a class="reference internal" href="_images/virfinder.png"><img alt="image2" src="_images/virfinder.png" style="width: 6in; height: 4.6154in;" /></a></p>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> As you can see there is a relationship between the <strong>p-value</strong> and the <strong>score</strong>. A higher score or lower p-value indicates a higher likelihood of the sequence being a viral sequence. You will also notice that the results correlate with the <strong>contig length</strong>. The curves are slightly different depending on whether the contigs are &gt; or &lt; than 3kb. This is because VirFinder uses different machine learning models at these different levels of length.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 1.6. Once VirSorter finishes running, we then generate the corresponding viral sequence FASTA files using a custom python script (<strong>parse_viral_pred.py</strong>) as follows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parse_viral_pred.py -a obs_results/ERR575691_host_filtered_filt500bp.fasta -f obs_results/ERR575691_host_filtered_filt500bp_VirFinder_table-all.tab -s obs_results/virsorter_output -o obs_results
+</pre></div>
+</div>
+<p>Following the execution of this command, FASTA files (<a href="#id1"><span class="problematic" id="id2">*</span></a>.fna) will be generated for each one of the VIRify categories mentioned above containing the corresponding putative viral sequences.</p>
+<p><strong>The VIRify pipeline takes the output from VirFinder and VirSorter, reporting three prediction categories:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>High confidence</strong>: VirSorter phage predictions from <strong>categories 1 and 2</strong>.</p></li>
+<li><p><strong>Low confidence</strong>:</p></li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li><p>Contigs that VirFinder reported with <strong>p-value &lt; 0.05 and score ≥ 0.9.</strong></p></li>
+<li><p>Contigs that VirFinder reported with <strong>p-value &lt; 0.05 and score ≥ 0.7</strong>, but that are also reported by VirSorter in <strong>category 3.</strong></p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>Prophages</strong>: VirSorter prophage predictions <strong>categories 4 and 5.</strong></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="detection-of-viral-taxonomic-markers">
+<h2>2. Detection of viral taxonomic markers<a class="headerlink" href="#detection-of-viral-taxonomic-markers" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> Once we have retrieved the putative viral sequences from the metagenomic assembly, the following step will be to analyse the proteins encoded in them in order to identify any viral taxonomic markers. To carry out this identification, we will employ a database of <strong>profile Hidden Markov Models (HMMs)</strong> built from proteins encoded in viral reference genomes. These profile HMMs were selected as viral taxonomic markers following a comprehensive random forest-based analysis carried out previously.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 2.1. The VIRify pipeline uses <strong>prodigal</strong> for the detection of <strong>protein coding sequences (CDSs</strong>) and <strong>hmmscan</strong> for the alignment of the encoded proteins to each of the profile HMMs stored in the aforementioned database. We will use the custom script <strong>Generate_vphmm_hmmer_matrix.py</strong> to conduct these steps for each one of the FASTA files sequentially in a “for loop”. In your terminal session, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> file <span class="k">in</span> <span class="k">$(</span>find obs_results/ -name <span class="s1">&#39;*.fna&#39;</span> -type f <span class="p">|</span> grep -i <span class="s1">&#39;putative&#39;</span><span class="k">)</span><span class="p">;</span> <span class="k">do</span> Generate_vphmm_hmmer_matrix.py -f <span class="si">${</span><span class="nv">file</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">file</span><span class="p">%/*</span><span class="si">}</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+</div>
+<p>Once the command execution finishes two new files will be stored for each category of viral predictions. The file with the suffix <strong>CDS.faa</strong> lists the proteins encoded in the CDSs reported by prodigal, whereas the file with the suffix <strong>hmmer_ViPhOG.tbl</strong> contains all significant alignments between the encoded proteins and the profile HMMs, on a per-domain-hit basis.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 2.2. The following command is used to parse the hmmer output and generate a new tabular file that lists alignment results in a per-query basis, which include the <strong>alignment ratio</strong> and absolute value of total <strong>E-value</strong> for each protein-profile HMM pair.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> file <span class="k">in</span> <span class="k">$(</span>find obs_results/ -name <span class="s1">&#39;*ViPhOG.tbl&#39;</span> -type f<span class="k">)</span><span class="p">;</span> <span class="k">do</span> Ratio_Evalue_table.py -i <span class="si">${</span><span class="nv">file</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">file</span><span class="p">%/*</span><span class="si">}</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+</div>
+</section>
+<section id="viral-taxonomic-assignment">
+<h2>3. Viral taxonomic assignment<a class="headerlink" href="#viral-taxonomic-assignment" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="_images/info.png"><img alt="image1" src="_images/info.png" style="width: 0.26667in; height: 0.26667in;" /></a> The final output of the VIRify pipeline includes a series of gene maps generated for each putative viral sequence and a tabular file that reports the taxonomic lineage assigned to each viral contig. The gene maps provide a convenient way of visualizing the taxonomic annotations obtained for each putative viral contig and compare the annotation results with the corresponding assigned taxonomic lineage. Taxonomic lineage assignment is carried out from the highest taxonomic rank (genus) to the lowest (order), taking all the corresponding annotations and assessing whether the most commonly reported one passes a pre-defined assignment threshold.</p>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 3.1. First, we are going to generate a tabular file that lists the taxonomic annotation results obtained for each protein from the putative viral contigs. We will generate this file for the putative viral sequences in each prediction category. Run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> file <span class="k">in</span> <span class="k">$(</span>find obs_results/ -name <span class="s1">&#39;*CDS.faa&#39;</span> -type f<span class="k">)</span><span class="p">;</span> <span class="k">do</span> viral_contigs_annotation.py -p <span class="si">${</span><span class="nv">file</span><span class="si">}</span> -t <span class="si">${</span><span class="nv">file</span><span class="p">%CDS.faa</span><span class="si">}</span>hmmer_ViPhOG_informative.tsv -o <span class="si">${</span><span class="nv">file</span><span class="p">%/*</span><span class="si">}</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 3.2. Next, we will take the tabular annotation files generated and use them to create the viral contig gene maps. To achieve this, run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> file <span class="k">in</span> <span class="k">$(</span>find obs_results/ -name <span class="s1">&#39;*annot.tsv&#39;</span> -type f<span class="k">)</span><span class="p">;</span> <span class="k">do</span> Make_viral_contig_map.R -t <span class="si">${</span><span class="nv">file</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">file</span><span class="p">%/*</span><span class="si">}</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="_images/action.png"><img alt="image3" src="_images/action.png" style="width: 0.25in; height: 0.25in;" /></a> 3.3. Finally, we will use the tabular annotation files again to carry out the taxonomic lineage assignment for each putative viral contig. Run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> file <span class="k">in</span> <span class="k">$(</span>find obs_results/ -name <span class="s1">&#39;*annot.tsv&#39;</span> -type f<span class="k">)</span><span class="p">;</span> <span class="k">do</span> contig_taxonomic_assign.py -i <span class="si">${</span><span class="nv">file</span><span class="si">}</span> -o <span class="si">${</span><span class="nv">file</span><span class="p">%/*</span><span class="si">}</span><span class="p">;</span> <span class="k">done</span>
+</pre></div>
+</div>
+<p>Final output results are stored in the <strong>obs_results/</strong> directory.</p>
+<p>The gene maps are stored per contig in individual <strong>PDF files</strong> (suffix names of the contigs indicate their level of confidence and category class obtained from VirSorter). Each protein coding sequence in the contig maps (PDFs) is coloured and labeled as <strong>high confidence</strong> (E-value &lt; 0.1), <strong>low confidence</strong> (E-value &gt; 0.1) or <strong>no hit</strong>, based on the matches to the HMM profiles. Do not confuse this with the high confidence or low confidence prediction of VIRify for the <strong>whole contig</strong>.</p>
+<p>Taxonomic annotation results per classification category are stored as text in the <strong>*_tax_assign.tsv</strong> files.</p>
+<p>Let’s inspect the results. Do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat obs_results/*tax_assign.tsv
+</pre></div>
+</div>
+<p>You should see a list of <strong>9 contigs</strong> detected as viral and their taxonomic annotation in separate columns (partitioned by taxonomic rank). However, some do not have an annotation (e.g. <strong>NODE_4…</strong> and <strong>NODE_5…</strong>).</p>
+<p>Open the gene map PDF files of the corresponding contigs to understand why some contigs were <strong>not assigned</strong> to a taxonomic lineage. You will see that for these cases, either there were not enough genes matching the HMMs, or there was disagreement in their assignment.</p>
+<p><img alt="image5" src="_images/contig_map.png" /></p>
+</section>
+</section>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="assembly-2.html"
-                        title="previous chapter">Assembly analysis</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="mag.html"
-                        title="next chapter">MAG generation</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/virify.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
+<h1 class="logo"><a href="docs.html">Biata-2021</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="docs.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="mag.html" title="MAG generation"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="assembly-2.html" title="Assembly analysis"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">mgnify-biata-2020 1 documentation</a> &#187;</li> 
-      </ul>
+    <div class="footer">
+      &copy;2021, MGnify.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/virify.rst.txt"
+          rel="nofollow">Page source</a>
     </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2020, MGnify.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
-    </div>
+
+    
+
+    
   </body>
 </html>
