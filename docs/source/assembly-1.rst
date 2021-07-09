@@ -402,7 +402,7 @@ they are ordered correctly.
    sed 's/\/2//g' ../clean/oral_human_example_1_splitaa_kneaddata_paired_2.fastq > ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq
    repair.sh in=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_1.fastq in2=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq out=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq out2=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_2.fastq
 
-To calculate the percent reads mapping to the assembly using the flagstat output generated in the previous step, calculate the number of primary alignments (mapped - secondary - supplementary). Then divide the number of primary alignments by the number of forward and reverse reads to get the fraction of reads mapped.
+|image2| To calculate the percent reads mapping to the assembly using the flagstat output generated in the previous step, calculate the number of primary alignments (mapped - secondary - supplementary). Then divide the number of primary alignments by the number of forward and reverse reads to get the fraction of reads mapped.
 
 .. code-block:: bash   
 
@@ -411,8 +411,10 @@ To calculate the percent reads mapping to the assembly using the flagstat output
     samtools flagstat oral_human_example_1_splitaa.sam > oral_human_example_1_splitaa_flagstat.txt
 
 
-To get the total number of reads in the forward read, run the command below and divide by 4.
+|image2| To get the total number of reads in the forward read, run the command below and divide by 4.
+
 .. code-block:: bash   
+
  wc -l ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq
  
 
