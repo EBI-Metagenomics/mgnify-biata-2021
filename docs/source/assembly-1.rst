@@ -3,8 +3,8 @@ Assembling data
 ***************
 
 - Sequence quality control (quality/adapter trimming, host decontamination)
+- Assembly/co-assembly
 - Evaluating an assembly
-- Removing contaminants after assembly
 - Submitting primary assemblies to the ENA
 
 Prerequisites
@@ -19,7 +19,7 @@ your data in: 
    chmod -R 777 ~/BiATA
    export DATADIR=~/BiATA/session1/data
 
-In this directory, downloaded the tarball from http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/
+In this directory, download the tarball from http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/
 
 .. code-block:: bash
 
@@ -37,7 +37,7 @@ Finally, start the docker container in the following way:
 
 .. code-block:: bash
 
-   docker run --rm -it  -e DISPLAY=$DISPLAY  -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -e DISPLAY=docker.for.mac.localhost:0 microbiomeinformatics/biata-qc-assembly
+   docker run --rm -it -e DISPLAY=$DISPLAY -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY=docker.for.mac.localhost:0 microbiomeinformatics/biata-qc-assembly
 
 Part 1 - Quality control and filtering of the raw sequence files
 -----------------------------------------------------------------
@@ -48,7 +48,7 @@ presence of adapter sequences, and remove both adapters and low quality
 sequences. You will also learn how to construct a reference database for
 decontamination. 
 
-|image2|\  First go to your working area, the data that you downloaded
+|image2|\  First go to your working area. The data that you downloaded
 has been mounted in ``/opt/data`` in the docker container.
 
 .. code-block:: bash
@@ -61,7 +61,7 @@ downloading and uncompressing the session data. As we write into this
 directory, we should be able to see this from inside the container, and
 on the filesystem of the computer running this container. We will use
 this to our advantage as we go through this practical. Unless stated
-otherwise all of the following commands should be executed in the
+otherwise, all of the following commands should be executed in the
 terminal running the Docker container.
 
 |image2|\  Generate a directory of the fastqc results
@@ -70,8 +70,8 @@ terminal running the Docker container.
 
     cd /opt/data
     mkdir fastqc_results
-    fastqc oral_human_example_1_splitaa.fastq.gz  --outdir fastqc_results
-    fastqc oral_human_example_2_splitaa.fastq.gz  --outdir fastqc_results
+    fastqc oral_human_example_1_splitaa.fastq.gz --outdir fastqc_results
+    fastqc oral_human_example_2_splitaa.fastq.gz --outdir fastqc_results
 
 |image2|\  Now on your **local** computer, go to the browser, and
 ``File -> Open File``. Use the file navigator to select the following file
@@ -100,7 +100,7 @@ into very good quality calls (green), calls of reasonable quality
 platforms will degrade as the run progresses, so it is common to see
 base calls falling into the orange area towards the end of a read.
 
-|image3|\  What does this tell you about your sequence data? When do the
+|image3|\  What does this tell you about your sequence data? Where do the
 errors start? 
 
 In the pre-processed files we see two warnings, as shown on the left
@@ -182,7 +182,7 @@ Now we need to build a bowtie index for them:
 
 .. code-block:: bash
 
-    bowtie2-build GRCh38_phix.fasta  GRCh38_phix.index  
+    bowtie2-build GRCh38_phix.fasta GRCh38_phix.index  
 
 |image1|\  It is possible to automatically download a pre-indexed human
 genome in Bowtie2 format using the following command (but do not do this
@@ -273,7 +273,7 @@ improved? 
 |image3|\  Did sequences at the 5’ end become uniform? Why might that
 be? Is there anything that suggests that adapter sequences were found? 
 
-|image29|\  To generate a summary file of how the sequence were
+|image2|\  To generate a summary file of how the sequence were
 categorised by Kneaddata, run the following command.  
 
 .. code-block:: bash
@@ -282,7 +282,7 @@ categorised by Kneaddata, run the following command.  
     kneaddata_read_count_table --input /opt/data/clean --output kneaddata_read_counts.txt
     less kneaddata_read_counts.txt
 
-|image3|\  What fraction of reads have been deemed to be contaminating?
+|image3|\  What fraction of reads were deemed to be contaminating?
 
 |image1|\ The reads have now be decontaminated any can be uploaded to
 ENA, one of the INSDC members. It is beyond the scope of this course to
@@ -477,7 +477,7 @@ have a single paired-end assembly. 
 
 .. code-block:: bash
 
-    megahit -1 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq -2 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq -o  coassembly/assembly1 -t 2 --k-list 23,51,77 
+    megahit -1 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq -2 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq -o coassembly/assembly1 -t 2 --k-list 23,51,77 
 
 |image2|\  Now run the assembly_stats on the contigs for this assembly.
 
@@ -497,10 +497,9 @@ both, such that the mate pairs match up.
 .. code-block:: bash
 
     cd /opt/data
-    megahit -1 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_1.fastq  -2 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_2.fastq -o coassembly/assembly2 -t 2 --k-list 23,51,77 
+    megahit -1 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_1.fastq -2 clean_other/oral_human_example_1_splitac_kneaddata_paired_1.fastq,clean_other/oral_human_example_1_splitab_kneaddata_paired_2.fastq -o coassembly/assembly2 -t 2 --k-list 23,51,77 
 
-|image2|\  Now perform another co-assembly, depending on the computer
-you have, either change one of the previous fastq files for the 
+|image2|\  Now perform another co-assembly: 
 
 .. code-block:: bash
 
