@@ -9,8 +9,7 @@ Assembling data
 
 Prerequisites
 ---------------
-This tutorial requires bandage to be installed.
-Install Bandage as per the github instructions for your machine  https://github.com/rrwick/Bandage#pre-built-binaries
+This tutorial requires Bandage which can be installed as per the github instructions for your system  https://github.com/rrwick/Bandage#pre-built-binaries
 
 For this tutorial you will need to make a working directory to store
 your data in: 
