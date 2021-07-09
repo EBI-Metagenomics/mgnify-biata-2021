@@ -37,7 +37,8 @@ Finally, start the docker container in the following way:
 
 .. code-block:: bash
 
-   docker run --rm -it -e DISPLAY=$DISPLAY -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY=docker.for.mac.localhost:0 microbiomeinformatics/biata-qc-assembly
+xhost +
+docker run --rm -it  -e DISPLAY=$DISPLAY  -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY=unix$DISPLAY microbiomeinformatics/microbiomeinformatics/biata-qc-assembly:v2021
 
 Part 1 - Quality control and filtering of the raw sequence files
 -----------------------------------------------------------------
@@ -70,8 +71,10 @@ terminal running the Docker container.
 
     cd /opt/data
     mkdir fastqc_results
-    fastqc oral_human_example_1_splitaa.fastq.gz --outdir fastqc_results
-    fastqc oral_human_example_2_splitaa.fastq.gz --outdir fastqc_results
+    fastqc oral_human_example_1_splitaa.fastq.gz
+    fastqc oral_human_example_2_splitaa.fastq.gz
+    mv /opt/data/*.zip /opt/data/fastqc_results
+    mv /opt/data/*.html /opt/data/fastqc_results
 
 |image2|\  Now on your **local** computer, go to the browser, and
 ``File -> Open File``. Use the file navigator to select the following file
@@ -386,12 +389,19 @@ percent of the metagenome.
 |image2|\ In addition to evaluating the contiguity the assemblies, we can
 ask what fraction of the diversity in the samples was assembled. We can
 answer this question by quantifying the number of reads that map to the
-assembly.
+assembly. bwa expects that the read names in the forward and reverse reads
+are the same so we will first remove the read identifiers and make sure that
+they are ordered correctly.
 
 .. code-block:: bash
+    sed 's/\/1//g' ../clean/oral_human_example_1_splitaa_kneaddata_paired_1.fastq > ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_1.fastq
+    sed 's/\/1//g' ../clean/oral_human_example_1_splitaa_kneaddata_paired_2.fastq > ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq
+    repair.sh in=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_1.fastq in2=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq out=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq out2=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_2.fastq
 
+.. code-block:: bash   
     bwa index scaffolds.fasta    
-    bwa mem -t 2 scaffolds.fasta /opt/data/clean/oral_human_example_1_splitaa_kneaddata_paired_1.fastq /opt/data/clean/oral_human_example_1_splitaa_kneaddata_paired_2.fastq | samtools view -bS - | samtools sort -@ 2 -o oral_human_example_1_splitaa.sam -
+    bwa mem -t 2 scaffolds.fasta ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_2.fastq | samtools view -bS - | samtools sort -@ 2 -o oral_human_example_1_splitaa.sam -
+    bgzip oral_human_example_1_splitaa.sam 
     samtools index oral_human_example_1_splitaa.sam
     samtools flagstat oral_human_example_1_splitaa.sam > oral_human_example_1_splitaa_flagstat.txt
 
