@@ -3,7 +3,7 @@ MAG generation
 ***************
 
 - Generation of metagenome assembled genomes (MAGs) from assemblies
-- Assessment of quality (MIGMAGs)
+- Assessment of quality (MIMAGs)
 - Taxonomic assignment
 
 Prerequisites
@@ -18,6 +18,9 @@ your data in. 
     chmod -R 777 ~/BiATA
     export DATADIR=~/BiATA/session4/data 
 
+(If your path to the data folder looks different from the one in this example, please make sure there are no spaces
+in any of your directory names.)
+
 In this directory, download the tarball from http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/
 
 .. code-block:: bash
@@ -26,7 +29,7 @@ In this directory, download the tarball from http://ftp.ebi.ac.uk/pub/databases/
     wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/session4.tgz
     tar xzvf session4.tgz
 
-Now makes sure that you have pulled the docker container
+Now make sure that you have pulled the docker container
 
 .. code-block:: bash
 
