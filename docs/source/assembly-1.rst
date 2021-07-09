@@ -74,10 +74,10 @@ terminal running the Docker container.
 
     cd /opt/data
     mkdir fastqc_results
-    fastqc oral_human_example_1_splitaa.fastq.gz
-    fastqc oral_human_example_2_splitaa.fastq.gz
-    mv /opt/data/*.zip /opt/data/fastqc_results
-    mv /opt/data/*.html /opt/data/fastqc_results
+    cd fastqc_results
+    fastqc ../oral_human_example_1_splitaa.fastq.gz
+    fastqc ../oral_human_example_2_splitaa.fastq.gz
+
 
 |image2|\  Now on your **local** computer, go to the browser, and
 ``File -> Open File``. Use the file navigator to select the following file
