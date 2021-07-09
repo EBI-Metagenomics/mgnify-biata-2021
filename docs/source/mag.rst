@@ -16,7 +16,6 @@ your data in. 
 
     mkdir -p ~/BiATA/session4/data
     chmod -R 777 ~/BiATA
-    export DATADIR=~/BiATA/session4/data 
 
 (If your path to the data folder looks different from the one in this example, please make sure there are no spaces
 in any of your directory names.)
@@ -39,6 +38,7 @@ Finally, start the docker container in the following way:
 
 .. code-block:: bash
 
+    export DATADIR=~/BiATA/session4/data/session4 
     docker run --rm -it  -e DISPLAY=$DISPLAY  -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw  -e DISPLAY=docker.for.mac.localhost:0 microbiomeinformatics/biata-binning
 
 Generating metagenome assembled genomes
@@ -79,6 +79,8 @@ repeat the process, you would run the following commands:
 
 .. code-block:: bash
 
+    cd /opt/data/assemblies
+    
     # index the contigs file that was produced by metaSPAdes:
     bwa index contigs.fasta
 
@@ -95,14 +97,14 @@ generate the coverage stats (*input.fastq.sam.bam).*
 
 **Running MetaBAT**
 
-The ``/opt/data/session4/assemblies`` directory inside the docker container should 
+The ``/opt/data/assemblies`` directory inside the docker container should 
 contain the following two files needed to run MetaBAT: *contigs.fasta* and *input.fastq.sam.bam*.
 
 |image3|\ Create a subdirectory where files will be output:
 
 .. code-block:: bash
 
-    cd /opt/data/session4/assemblies/
+    cd /opt/data/assemblies/
     mkdir contigs.fasta.metabat-bins2000
 
 |image3|\  Run the following command to produce a
@@ -111,12 +113,12 @@ MetaBAT:
 
 .. code-block:: bash
     
-    cd /opt/data/session4/assemblies/
+    cd /opt/data/assemblies/
     jgi_summarize_bam_contig_depths --outputDepth contigs.fasta.depth.txt input.fastq.sam.bam
 
     # now run MetaBAT
 
-    cd /opt/data/session4/assemblies/
+    cd /opt/data/assemblies/
     metabat2 --inFile contigs.fasta --outFile contigs.fasta.metabat-bins2000/bin --abdFile contigs.fasta.depth.txt --minContig 2000
 
 |image3|\ Once the binning process is complete, each bin will be
@@ -127,7 +129,7 @@ grouped into a multi-fasta file with a name structure of
 
 .. code-block:: bash
 
-    cd /opt/data/session4/assemblies/contigs.fasta.metabat-bins2000/
+    cd /opt/data/assemblies/contigs.fasta.metabat-bins2000/
 
 |image4|\  How many bins did the process produce?
 
@@ -152,12 +154,12 @@ and **strain heterogeneity** of the predicted genome. 
 
 .. code-block:: bash
 
-    cd /opt/data/session4
+    cd /opt/data
     mkdir checkm_data
     mv checkm_data_2015_01_16.tar.gz checkm_data
     cd checkm_data
     tar zxvf checkm_data_2015_01_16.tar.gz
-    checkm data setRoot /opt/data/session4/checkm_data
+    checkm data setRoot /opt/data/checkm_data
 
 This program has some handy tools not only for quality control, but also
 for taxonomic classification, assessing coverage, building a
@@ -168,7 +170,7 @@ Move back to the top level directory 
 
 .. code-block:: bash
 
-    cd /opt/data/session4/assemblies/
+    cd /opt/data/assemblies/
 
 Now run CheckM with the following command:
 
