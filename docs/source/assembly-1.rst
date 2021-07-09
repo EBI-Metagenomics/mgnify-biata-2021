@@ -420,16 +420,14 @@ What factors can affect the percent of reads mapping to the assembly?
 Assembly Graphs Easily), is a program that creates interactive
 visualisations of assembly graphs. They can be useful for finding
 sections of the graph, such as rRNA, or to try to find parts of a
-genome. Note, you can install Bandage on your local system. With
+genome. Note, you can install Bandage on your local system - see the prerequisites section. With
 Bandage, you can zoom and pan around the graph and search for sequences,
 plus much more. The following guide allows you to look at the assembly
 graph.  Normally, I would recommend looking at the ‘
 assembly_graph.fastg, but our assembly is quite fragmented, so we will
 load up the assembly_graph_after_simplification.gfa.   
 
-|image2|\  At the terminal, type 
-
-    Bandage
+|image2|\  Open Bandage
 
 In the the Bandage GUI perform the following
 
