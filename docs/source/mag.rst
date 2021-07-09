@@ -181,7 +181,7 @@ Now run CheckM with the following command:
 Due to memory constraints (< 40 GB), we have added the option
 **--reduced_tree** to build the phylogeny with a reduced number of
 reference genomes. In case the process still runs out of memory
-and is killed, the result files have been provided in ``/opt/data/session4/checkm_answers``.
+and is killed, the result files have been provided in ``/opt/data/checkm_answers``.
 
 Once the **lineage_wf** analysis is done, the reference tree can be
 found in **checkm_output/storage/tree/concatenated.tre**. Additionally,
