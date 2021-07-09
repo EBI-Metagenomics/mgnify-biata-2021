@@ -408,8 +408,6 @@ To calculate the percent reads mapping to the assembly using the flagstat output
 
     bwa index scaffolds.fasta    
     bwa mem -t 2 scaffolds.fasta ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_2.fastq | samtools view -bS - | samtools sort -@ 2 -o oral_human_example_1_splitaa.sam -
-    bgzip oral_human_example_1_splitaa.sam 
-    samtools index oral_human_example_1_splitaa.sam
     samtools flagstat oral_human_example_1_splitaa.sam > oral_human_example_1_splitaa_flagstat.txt
 
 
