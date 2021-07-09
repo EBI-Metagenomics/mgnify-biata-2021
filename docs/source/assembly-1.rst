@@ -412,7 +412,7 @@ they are ordered correctly.
     samtools flagstat oral_human_example_1_splitaa.sam > oral_human_example_1_splitaa_flagstat.txt
  
  
-|image2| To get the total number of reads in the forward read, run the command below and divide by 4. 
+|image2| To get the total number of reads in the forward read, run the command below and divide by 4. Repeat for the reverse read.
 
 .. code-block:: bash 
 
