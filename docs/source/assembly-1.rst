@@ -399,7 +399,7 @@ they are ordered correctly.
 .. code-block:: bash
 
    sed 's/\/1//g' ../clean/oral_human_example_1_splitaa_kneaddata_paired_1.fastq > ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_1.fastq
-   sed 's/\/1//g' ../clean/oral_human_example_1_splitaa_kneaddata_paired_2.fastq > ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq
+   sed 's/\/2//g' ../clean/oral_human_example_1_splitaa_kneaddata_paired_2.fastq > ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq
    repair.sh in=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_1.fastq in2=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidentifiers_2.fastq out=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq out2=../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_2.fastq
 
 To calculate the percent reads mapping to the assembly using the flagstat output generated in the previous step, calculate the number of primary alignments (mapped - secondary - supplementary). Then divide the number of primary alignments by the number of forward and reverse reads to get the fraction of reads mapped.
@@ -411,6 +411,12 @@ To calculate the percent reads mapping to the assembly using the flagstat output
     bgzip oral_human_example_1_splitaa.sam 
     samtools index oral_human_example_1_splitaa.sam
     samtools flagstat oral_human_example_1_splitaa.sam > oral_human_example_1_splitaa_flagstat.txt
+
+
+To get the total number of reads in the forward read, run the command below and divide by 4.
+.. code-block:: bash   
+ wc -l ../clean/oral_human_example_1_splitaa_kneaddata_paired_noidordered_1.fastq
+ 
 
 |image3|\ What percent of the reads were incorporated into the assembly?
 What factors can affect the percent of reads mapping to the assembly?
