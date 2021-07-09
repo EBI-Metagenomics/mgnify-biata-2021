@@ -29,7 +29,7 @@ In this directory, download the tarball from http://ftp.ebi.ac.uk/pub/databases/
     wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/session4.tgz
     tar xzvf session4.tgz
 
-Now make sure that you have pulled the docker container
+Now make sure that you have pulled the docker container:
 
 .. code-block:: bash
 
@@ -46,7 +46,7 @@ Generating metagenome assembled genomes
 
 |image1|\ Learning Objectives - in the following exercises you will
 learn how to bin an assembly, assess the quality of this assembly with
-checkM and then visualise a placement of these genomes within a
+CheckM and then visualise a placement of these genomes within a
 reference tree. 
 
 |image1|\  As with the assembly process, there are many software tools available for
@@ -95,20 +95,14 @@ generate the coverage stats (*input.fastq.sam.bam).*
 
 **Running MetaBAT**
 
-|image3|\  Create a working directory on your desktop:
-
-.. code-block:: bash
-
-    tar zxvf seesion4.tgz
-
-This should contain the following two file *contigs.fasta*
-and *input.fastq.sam.bam*.
+The ``/opt/data/session4/assemblies`` directory inside the docker container should 
+contain the following two files needed to run MetaBAT: *contigs.fasta* and *input.fastq.sam.bam*.
 
 |image3|\ Create a subdirectory where files will be output:
 
 .. code-block:: bash
 
-    cd /opt/data/assemblies/
+    cd /opt/data/session4/assemblies/
     mkdir contigs.fasta.metabat-bins2000
 
 |image3|\  Run the following command to produce a
@@ -116,14 +110,14 @@ and *input.fastq.sam.bam*.
 MetaBAT:
 
 .. code-block:: bash
-
-    cd /opt/data/assemblies/
+    
+    cd /opt/data/session4/assemblies/
     jgi_summarize_bam_contig_depths --outputDepth contigs.fasta.depth.txt input.fastq.sam.bam
 
     # now run MetaBAT
 
-    cd /opt/data/assemblies/
-    metabat2 --inFile  contigs.fasta --outFile contigs.fasta.metabat-bins2000/bin --abdFile contigs.fasta.depth.txt --minContig 2000
+    cd /opt/data/session4/assemblies/
+    metabat2 --inFile contigs.fasta --outFile contigs.fasta.metabat-bins2000/bin --abdFile contigs.fasta.depth.txt --minContig 2000
 
 |image3|\ Once the binning process is complete, each bin will be
 grouped into a multi-fasta file with a name structure of
@@ -133,11 +127,13 @@ grouped into a multi-fasta file with a name structure of
 
 .. code-block:: bash
 
-    cd /opt/data/assemblies/*contigs.fasta.metabat-bins2000/bin
+    cd /opt/data/session4/assemblies/contigs.fasta.metabat-bins2000/
 
 |image4|\  How many bins did the process produce?
 
-|image4|\  How many sequences are in each bin?
+|image4|\  How many sequences are in each bin? 
+
+|image4|\  What does each bin represent?
 
 Obviously, not all bins will have the same level of accuracy since some
 might represent a very small fraction of a potential species present in
