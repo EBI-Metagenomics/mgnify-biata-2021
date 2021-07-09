@@ -18,13 +18,13 @@ your data in: 
 
    mkdir -p ~/BiATA/session1/data
    chmod -R 777 ~/BiATA
-   export DATADIR=~/BiATA/session1/data
-
+   export DATADIR=~/BiATA/session1/data/session1
+   
 In this directory, download the tarball from http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/
 
 .. code-block:: bash
 
-   cd  ~/BiATA/session1/data
+   cd  ~/BiATA/session1/data/
    wget -q http://ftp.ebi.ac.uk/pub/databases/metagenomics/mgnify_courses/biata_2021/session1_2021.tgz
    tar -xzvf session1.tgz
 
@@ -433,7 +433,7 @@ In the the Bandage GUI perform the following
 
     Select File->Load graph
 
-    Navigate to  /opt/data/assembly and select on assembly_graph_after_simplification.gfa
+    Navigate to  ~/BiATA/session1/data/session1/assembly and select on assembly_graph_after_simplification.gfa
 
 Once loaded, you need to draw the graph. To do so, under the “Graph
 drawing” panel on the left side perform the following:
