@@ -152,10 +152,12 @@ and **strain heterogeneity** of the predicted genome. 
 
 .. code-block:: bash
 
+    cd /opt/data/session4
     mkdir checkm_data
     mv checkm_data_2015_01_16.tar.gz checkm_data
+    cd checkm_data
     tar zxvf checkm_data_2015_01_16.tar.gz
-    checkm data setRoot /opt/data/checkm_data
+    checkm data setRoot /opt/data/session4/checkm_data
 
 This program has some handy tools not only for quality control, but also
 for taxonomic classification, assessing coverage, building a
@@ -166,7 +168,7 @@ Move back to the top level directory 
 
 .. code-block:: bash
 
-    cd /opt/data/assemblies/
+    cd /opt/data/session4/assemblies/
 
 Now run CheckM with the following command:
 
