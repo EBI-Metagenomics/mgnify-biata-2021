@@ -9,6 +9,8 @@ Assembling data
 
 Prerequisites
 ---------------
+This tutorial requires bandage to be installed.
+Install Bandage as per the github instructions for your machine  https://github.com/rrwick/Bandage#pre-built-binaries
 
 For this tutorial you will need to make a working directory to store
 your data in: 
@@ -31,7 +33,7 @@ Now makes sure that you have pulled the docker container
 
 .. code-block:: bash
 
-    docker pull microbiomeinformatics/biata-qc-assembly
+    docker pull microbiomeinformatics/biata-qc-assembly:v2021
 
 Finally, start the docker container in the following way:
 
