@@ -77,6 +77,8 @@ terminal running the Docker container.
     cd fastqc_results
     fastqc ../oral_human_example_1_splitaa.fastq.gz
     fastqc ../oral_human_example_2_splitaa.fastq.gz
+    mv ../*html .
+    mv ../*zip .
 
 
 |image2|\  Now on your **local** computer, go to the browser, and
