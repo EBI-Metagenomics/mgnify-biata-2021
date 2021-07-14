@@ -41,7 +41,7 @@ Finally, start the docker container in the following way:
     xhost +
     docker run --rm -it  -e DISPLAY=$DISPLAY  -v $DATADIR:/opt/data -v /tmp/.X11-unix:/tmp/.X11-unix:rw -e DISPLAY=unix$DISPLAY microbiomeinformatics/biata-qc-assembly:v2021
 
-
+Note that if running Docker windows, WSL must be disabled by selecting "Turn Windows features or or off" when Docker starts.
 
 Part 1 - Quality control and filtering of the raw sequence files
 -----------------------------------------------------------------
